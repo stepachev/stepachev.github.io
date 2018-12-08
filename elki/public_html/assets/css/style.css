@@ -1,0 +1,610 @@
+.both, .catalog__list:after {
+  clear: both;
+  display: block;
+}
+
+@font-face {
+  font-family: "Circe-Regular";
+  src: url("../../assets/fonts/Circe-Regular/Circe-Regular.eot?#iefix") format("embedded-opentype"), url("../../assets/fonts/Circe-Regular/Circe-Regular.eot"), url("../../assets/fonts/Circe-Regular/Circe-Regular.otf"), url("../../assets/fonts/Circe-Regular/Circe-Regular.ttf") format("truetype"), url("../../assets/fonts/Circe-Regular/Circe-Regular.woff2") format("woff2"), url("../../assets/fonts/Circe-Regular/Circe-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Circe-ExtraBold";
+  src: url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.eot?#iefix") format("embedded-opentype"), url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.eot"), url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.otf"), url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.ttf") format("truetype"), url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.woff2") format("woff2"), url("../../assets/fonts/Circe-ExtraBold/Circe-ExtraBold.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font: 18px/1em "Circe-Regular";
+  min-width: 1158px;
+  margin: 0 auto;
+  letter-spacing: 0;
+  color: #151515;
+  background: #ffffff;
+}
+
+.section {
+  box-sizing: border-box;
+  display: block;
+  position: relative;
+}
+.section--mini {
+  max-width: 1158px;
+  margin: 0 auto;
+}
+.section__h {
+  font: 52px "Circe-ExtraBold";
+  display: block;
+  text-align: center;
+  padding: 90px 0 50px;
+}
+.section__h-in {
+  display: inline-block;
+  border-bottom: 2px solid #ff515e;
+}
+
+.float--left, .about__col--left {
+  float: left;
+}
+.float--right, .about__col--right {
+  float: right;
+}
+
+.font--bottom {
+  border-bottom: 1px dashed currentColor;
+}
+.font--upper {
+  text-transform: uppercase;
+}
+.font--bold {
+  font-family: "Circe-ExtraBold";
+}
+
+.input {
+  box-sizing: border-box;
+  line-height: 0;
+}
+.input--fancy {
+  font-size: 24px;
+  color: #999999;
+  padding: 11px 0;
+  text-align: center;
+  border-bottom: 1px solid #999999;
+}
+.input--white {
+  font-size: 20px;
+  padding: 0.6em 1em;
+  border-radius: 100px;
+}
+
+.button {
+  line-height: 1;
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s;
+}
+.button--block {
+  display: block;
+}
+.button--inline {
+  display: inline-block;
+}
+.button--blue {
+  border-radius: 20px;
+  padding: 9px 30px 11px;
+  color: #ffffff;
+  font-family: "Circe-ExtraBold";
+  text-align: center;
+  background-color: #004fce;
+  box-shadow: 0 4px 0 #00245e, 0 5px 0 rgba(0, 0, 0, 0.38);
+}
+.button--blue:hover {
+  background-color: #5086dc;
+}
+.button--border {
+  font-family: "Circe-Regular";
+  font-size: 12px;
+  padding: 14px 25px;
+  border-radius: 50px;
+  color: #ffffff;
+  text-transform: uppercase;
+  border: 3px solid transparent;
+}
+.button--border-red {
+  border-color: #ef3c3c;
+}
+.button--border-red:hover {
+  color: #ffffff;
+  background-color: #ef3c3c;
+}
+
+.top {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-family: "Circe-ExtraBold";
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  right: 0;
+  padding: 25px 0;
+}
+.top__middle {
+  display: inline-block;
+  vertical-align: middle;
+}
+.top__logo:hover {
+  opacity: 0.8;
+}
+.top__menu {
+  overflow: hidden;
+  list-style-type: none;
+}
+.top__menu-li {
+  float: left;
+  margin: 0 30px;
+}
+.top__menu-a {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.top__menu-a:hover {
+  opacity: 0.8;
+}
+
+.header {
+  background: url("../../assets/images/develop/phone1.jpg") no-repeat center;
+  height: 702px;
+}
+.header__text {
+  font-family: "Circe-ExtraBold";
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 2em;
+  padding-top: 180px;
+  text-shadow: -4px 8px 3px rgba(0, 0, 0, 0.64);
+  letter-spacing: -0.15em;
+}
+.header__text > * {
+  line-height: 1.2em;
+  display: block;
+}
+
+.plus {
+  background-color: #f0ce83;
+  overflow: hidden;
+  padding: 20px 24px;
+}
+.plus__item {
+  float: left;
+  text-align: center;
+  width: 214px;
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s;
+  margin: 0 86px;
+}
+.plus__item:hover {
+  -webkit-transform: translateY(-10px);
+      -ms-transform: translateY(-10px);
+          transform: translateY(-10px);
+}
+.plus__item-icon {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 11px;
+  background: url("../../assets/images/develop/plus.png") no-repeat;
+}
+.plus__item-icon--1 {
+  background-position: -10px -10px;
+}
+.plus__item-icon--2 {
+  background-position: -10px -122px;
+}
+.plus__item-icon--3 {
+  background-position: -10px -242px;
+}
+.plus__item-desc {
+  line-height: 1.2em !important;
+  font: 20px "Circe-ExtraBold";
+}
+
+.about {
+  padding-bottom: 66px;
+  background: url("../../assets/images/develop/phone2_1.png") no-repeat left 50px, url("../../assets/images/develop/phone2_2.png") no-repeat right 70px;
+}
+.about__inner {
+  background: url("../../assets/images/develop/elka.png") no-repeat center;
+  height: 466px;
+  position: relative;
+}
+.about__item {
+  width: 190px;
+  text-align: center;
+  margin-bottom: 17px;
+}
+.about__item-img {
+  width: 130px;
+  height: 130px;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 10px solid #f3b73f;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.about__item-desc {
+  font-size: 20px;
+  font-family: "Circe-ExtraBold";
+}
+.about__col {
+  display: block;
+  position: absolute;
+}
+.about__col--left {
+  left: 50%;
+  margin-left: -441px;
+}
+.about__col--right {
+  right: 50%;
+  margin-right: -441px;
+}
+
+.catalog {
+  padding-bottom: 45px;
+  background: url("../../assets/images/develop/phone3_1.png") no-repeat left 260px, url("../../assets/images/develop/phone3_2.png") no-repeat right 75px, url("../../assets/images/develop/lines/1.png") no-repeat top left, #ebebeb;
+}
+.catalog__list {
+  padding: 30px 10px 30px;
+}
+.catalog__list:after {
+  content: '';
+}
+.catalog__item {
+  float: left;
+  width: 150px;
+  text-align: center;
+  margin: 0 63px 40px;
+  cursor: pointer;
+}
+.catalog__item-image {
+  display: block;
+  height: 153px;
+  position: relative;
+  background: url("../../assets/images/develop/elka2.png");
+}
+.catalog__item-width {
+  position: absolute;
+  right: 100%;
+  top: 40%;
+  font-size: 20px;
+  -webkit-transform: rotate(-90deg);
+      -ms-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  white-space: nowrap;
+  margin-right: -10px;
+  font-style: normal;
+  font-family: "Circe-ExtraBold";
+}
+.catalog__item-width:after {
+  content: " м";
+}
+.catalog__item-radio {
+  position: fixed;
+  top: -100%;
+  left: 0;
+}
+.catalog__item-check {
+  display: inline-block;
+  width: 37px;
+  height: 37px;
+  border-radius: 100%;
+  box-shadow: inset 2px 2px 3px rgba(0, 0, 0, 0.2), inset -2px -2px 3px rgba(0, 0, 0, 0.2), inset 2px -2px 3px rgba(0, 0, 0, 0.2), inset -2px 2px 3px rgba(0, 0, 0, 0.2);
+}
+.catalog__item-check:after {
+  content: '';
+  background: #e30000;
+  width: 20px;
+  display: inline-block;
+  border-radius: 100%;
+  height: 20px;
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s;
+  -webkit-transform: scale(0);
+      -ms-transform: scale(0);
+          transform: scale(0);
+  margin: 10px 0 0 2px;
+}
+.catalog__item-radio:checked + .catalog__item-check:after {
+  -webkit-transform: none;
+      -ms-transform: none;
+          transform: none;
+}
+.catalog__item-price {
+  display: block;
+  background: #ffd52b;
+  font-size: 30px;
+  font-family: "Circe-ExtraBold";
+  padding: 15px 0 10px;
+  margin: 14px 0 7px;
+  border-radius: 10px;
+}
+.catalog__item-price:after {
+  content: " руб.";
+  font-size: 20px;
+}
+
+.form {
+  background-color: #ff0000;
+  border-radius: 200px;
+  padding: 13px;
+  width: 1030px;
+}
+.form__inner {
+  border: 5px solid #ffffff;
+  border-radius: inherit;
+  text-align: center;
+  padding: 10px 0 30px;
+  line-height: 1.1;
+  color: #ffffff;
+}
+.form__h {
+  font-family: "Circe-ExtraBold";
+  font-size: 52px;
+}
+.form__d {
+  font-size: 20px;
+}
+.form__thank {
+  margin-top: 30px;
+}
+.form__thank > input {
+  font-size: 20px;
+  margin: 0 15px;
+}
+
+.reviews {
+  height: 837px;
+  background: url("../../assets/images/develop/lines/2.png") no-repeat top left, url("../../assets/images/develop/lines/3.png") no-repeat bottom left, url("../../assets/images/develop/phone4.jpg") no-repeat center;
+}
+.reviews__item {
+  overflow: hidden;
+}
+.reviews__item-left {
+  float: left;
+  width: 60%;
+}
+.reviews__item-right {
+  float: right;
+  width: 40%;
+}
+.reviews__item-img {
+  border-radius: 10px;
+  box-shadow: -4px 8px 9px rgba(0, 0, 0, 0.64);
+}
+.reviews__item-text {
+  margin-right: 66px;
+  padding: 34px;
+  border-radius: 10px;
+  font-size: 20px;
+  line-height: 1.1;
+  min-height: 232px;
+  background: #ffffff;
+  box-shadow: 0 8px 9px rgba(0, 0, 0, 0.64);
+}
+.reviews__profile {
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.reviews__profile-pic {
+  margin-right: 36px;
+  border-radius: 100%;
+  float: left;
+}
+.reviews__profile-name {
+  font: 40px "Circe-ExtraBold";
+  margin: 84px 0 10px;
+}
+.reviews__profile-url {
+  font-size: 20px;
+  color: #0000ff;
+  text-decoration: underline;
+}
+.reviews__profile-url:hover {
+  text-decoration: none;
+  color: #ef3c3c;
+}
+
+.discount {
+  height: 350px;
+  background: url("../../assets/images/develop/phone5_1.png") no-repeat, url("../../assets/images/develop/phone5_2.png") no-repeat, #f2b938;
+  background-position: top left, top 54px right 144px;
+  padding: 25px 0;
+}
+.discount__text {
+  background: #e52d51;
+  box-shadow: -4px 8px 9px rgba(0, 0, 0, 0.64);
+  padding: 20px 50px;
+  font-size: 52px;
+  margin-top: 40px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  width: 55%;
+  line-height: 1;
+  float: left;
+  color: #ffffff;
+}
+.discount__buy {
+  float: right;
+  width: 40%;
+}
+
+.gallery {
+  background: url("../../assets/images/develop/lines/4.png") no-repeat top left;
+  overflow: hidden;
+}
+.gallery__item {
+  float: left;
+  width: 25%;
+  display: block;
+}
+.gallery__item-img {
+  display: block;
+}
+
+.footer {
+  background: #0df6e5;
+  padding: 22px 0;
+  overflow: hidden;
+  color: #ffffff;
+  text-align: center;
+  font-size: 14px;
+}
+.footer__left, .footer__right, .footer__middle {
+  vertical-align: middle;
+  display: inline-block;
+}
+.footer__left, .footer__right {
+  width: 33%;
+}
+.footer__right {
+  text-align: right;
+}
+.footer__right a:hover {
+  text-decoration: underline;
+}
+.footer__middle {
+  width: 34%;
+}
+.footer__middle > * {
+  vertical-align: middle;
+  margin: 0 10px;
+  display: inline-block;
+}
+.footer__vk {
+  width: 50px;
+  height: 50px;
+  background: url("../../assets/images/develop/vk.png");
+}
+.footer__vk:hover {
+  opacity: 0.9;
+}
+
+.fancy-form {
+  width: 410px;
+  padding: 27px 0 65px;
+  text-align: center;
+}
+.fancy-form__fieldset {
+  padding: 19px 38px;
+}
+.fancy-form__body {
+  padding-top: 63px;
+}
+
+.js-form__finish {
+  display: none;
+}
+
+.timer {
+  width: 100%;
+  text-align: center;
+  line-height: 1;
+  background: #ecb999;
+  padding: 5px;
+  color: #ffffff;
+}
+.timer__td {
+  font-family: "Circe-ExtraBold";
+}
+.timer__td--h {
+  padding: 13px 74px;
+  background: #ffffff;
+  color: #ecb999;
+  font-size: 52px;
+}
+.timer__td--number {
+  padding: 19px 40px 0;
+  font-size: 72px;
+  width: 85px;
+}
+.timer__td--desc {
+  padding: 7px;
+  font-size: 24px;
+}
+
+.how {
+  padding-bottom: 47px;
+  background: url("../../assets/images/develop/phone6_1.png") no-repeat, url("../../assets/images/develop/phone6_2.png") no-repeat;
+  background-position: left top 20px, right top 20px;
+}
+.how__list {
+  overflow: hidden;
+  padding: 25px 0;
+}
+.how__item {
+  position: relative;
+  display: block;
+  float: left;
+  text-align: center;
+  width: 180px;
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s;
+}
+.how__item:first-child ~ .how__item {
+  margin-left: 64px;
+}
+.how__item:hover {
+  -webkit-transform: translateY(-10px);
+      -ms-transform: translateY(-10px);
+          transform: translateY(-10px);
+}
+.how__item-line {
+  background: url("../../assets/images/develop/how/lines.png") no-repeat;
+  position: absolute;
+  left: 100%;
+  top: 60px;
+  display: block;
+  margin-left: -22px;
+}
+.how__item-line--1 {
+  width: 105px;
+  height: 21px;
+  background-position: -10px -38px;
+}
+.how__item-line--2 {
+  width: 115px;
+  height: 22px;
+  background-position: -10px -79px;
+}
+.how__item-line--3 {
+  width: 126px;
+  height: 8px;
+  background-position: -10px -10px;
+}
+.how__item-img {
+  border: 10px solid #f3b73f;
+  width: 130px;
+  height: 130px;
+  box-sizing: border-box;
+  border-radius: 100%;
+  overflow: hidden;
+  margin-bottom: 13px;
+  display: inline-block;
+}
+.how__item-desc {
+  line-height: 1;
+  font-size: 20px;
+}
+
+@media all and (max-width:1500px){
+
+  .how{
+      background: url("../../assets/images/develop/phone6_2.png") no-repeat;
+      background-position: right top 20px;
+  }
+
+  .about{
+    background: url("../../assets/images/develop/phone2_2.png") no-repeat right 70px;
+  }
+
+}
