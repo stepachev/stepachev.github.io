@@ -1,0 +1,203 @@
+<!doctype>
+<html>
+<head>
+    <title>SC4 - AdminPanel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <link rel="stylesheet" type="text/css" href="system/main.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="system/main.js"></script>
+    <script language="javascript">
+        $(document).ready(function() {
+            window.config = '{{config}}';
+            function forEach(data, callback){
+                for(var key in data){
+                    if(data.hasOwnProperty(key)){
+                        callback(key, data[key]);
+                    }
+                }
+            }
+
+            forEach(JSON.parse(window.config), function(key, value) {
+                if(key == 'script_password') {
+                    function addPasswordToUrl(id, pass) {
+                        $('#' + id).attr('href', $('#' + id).attr('href') + '&password=' + pass);
+                    }
+
+                    addPasswordToUrl('clearcsssettings', value);
+                    addPasswordToUrl('clearcache', value);
+                    addPasswordToUrl('reinstall', value);
+                }
+                else if(key == 'css_color_random' && value == 'on')
+                    $('#clearcsssettings').show();
+				else if(key == 'replacements_standart_checkbox' && value == 'on')
+					$.get('replacements_standart.txt').success(function(data) {
+						$('textarea[name=replacements_standart').val(data)
+					});
+				else if(key == 'replacements_regular_checkbox' && value == 'on')
+					$.get('replacements_regular.txt').success(function(data) {
+						$('textarea[name=replacements_regular').val(data)
+					});
+					
+					
+                if(value == 'on')
+                    $('input[name=' + key + ']').attr('checked', 'checked');
+                else {
+                    $('input[name=' + key + ']').attr('value', value);
+                    $('textarea[name=' + key + ']').val(value);
+                }
+				
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div id="logo">S<span>ity</span>C<span>opy</span> 4<span>.1</span> - <span>AdminPanel</span></div>
+<div id="content">
+    <form enctype="multipart/form-data" action="/index.php" method="post">
+        <table style="min-width:371px;">
+            <tr id="one_site_url">
+                <td style="width: 106px;">Url:</td>
+                <td style="font-size:13px;padding-left:2px;"><input type="text" name="url" /></td>
+                <td class="status" style="width: 16px;"></td>
+                <td width="50px;"></td>
+            </tr>
+            <tr id="tbl_charset">
+                <td>Кодировка:</td>
+                <td><input type="text" name="charset" /></td>
+                <td class="status" style="width: 16px;"></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height:30px;"><a id="a_copysettings" class="nolink">Настройки копирования</a></td>
+            </tr>
+            <tr class="tbl_copysettings">
+                <td colspan="4">Синонимизация текста <input type="checkbox" name="sinonim" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_copysettings">
+                <td colspan="4">Вырезать счетчики <input type="checkbox" name="cutcounters" style="float:right;" /></td>
+            </tr>
+            <!--tr class="tbl_submenu" id="archive_email">
+                <td colspan="4">Отправить на email <input type="text" name="archive_email" style="width: 150px;"/> ?</td>
+            </tr>
+            <tr class="tbl_copysettings">
+                <td colspan="4">Перевод контента <input type="checkbox" name="content_translate" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="content_translate_language1">
+                <td colspan="2">С &nbsp;
+                    <select name="content_translate_language1">
+                        <option value="ru">Русского</option>
+                        <option value="uk">Украинского</option>
+                        <option value="fr">Французского</option>
+                        <option value="de">Немецкого</option>
+                        <option value="en">Английский</option>
+                    </select></td>
+            </tr>
+            <tr class="tbl_submenu" id="content_translate_language2">
+                <td colspan="4">На
+                    <select name="content_translate_language2">
+                        <option value="ru">Русский</option>
+                        <option value="uk">Украинский</option>
+                        <option value="en">Английский</option>
+                        <option value="fr">Французский</option>
+                        <option value="de">Немецкий</option>
+                    </select></td>
+            </tr-->
+            <tr class="tbl_copysettings">
+                <td colspan="4">Использовать прокси <input type="checkbox" name="use_proxy" style="float:right;" /></td>
+            </tr>
+            </tr>
+            <tr class="tbl_submenu" id="proxy_list">
+                <td colspan="4">Прокси:<br/>
+                    <textarea name="proxy_list" style="width:300px; height:80px;"></textarea></td>
+            </tr>
+            <tr class="tbl_copysettings">
+                <td colspan="4">Рандомное изменение цветов в CSS <input type="checkbox" name="css_color_random" style="float:right;" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height:30px;"><a id="a_imgsettings" class="nolink">Настройки изображений</a></td>
+            </tr>
+            <tr class="tbl_imgsettings">
+                <td colspan="4">Зеркальное отражение <input type="checkbox" name="img_mirror" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_imgsettings">
+                <td colspan="4">Копирайт <input type="checkbox" name="img_copyright" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="img_copyright_text">
+                <td>Текст</td>
+                <td colspan="3"><input type="text" name="img_copyright_text" placeholder="Любой текст (на англ.)" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="img_copyright_color">
+                <td>Цвет текста</td>
+                <td colspan="3"><input type="text" name="img_copyright_color" value="#000000" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="img_copyright_bg_color">
+                <td>Цвет фона</td>
+                <td colspan="3"><input type="text" name="img_copyright_bg_color" value="#ffffff"/></td>
+            </tr>
+            <tr class="tbl_submenu" id="img_copyright_bg_position">
+                <td colspan="3">Расположение копирайта <input type="text" name="img_copyright_bg_position" style="width:30px;" value="rd" title="l - left, r - right, d - down, u - up."/></td>
+            </tr>
+            <tr class="tbl_imgsettings">
+                <td colspan="4">Масштабирование <input type="text" name="img_zoom" value="0" style="width:40px;" />%</td>
+            </tr>
+            <tr class="tbl_imgsettings">
+                <td colspan="4">Исключения:<br/>
+                    <textarea name="img_exception" style="width:300px; height:80px;" placeholder="/img/logo.png
+																										  /img/icon/"></textarea>
+                </td>
+            </tr>
+            <tr class="tbl_imgsettings">
+                <td colspan="4">Минимальный размер <input type="text" name="img_min_weight" value="60" style="width:30px;" /> x <input type="text" name="img_min_height" value="60" style="width:30px;" /> px</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="height:30px;"><a id="a_replacements" class="nolink">Замены</a></td>
+            </tr>
+            <tr class="tbl_replacements">
+                <td colspan="4">Обычный текст <input type="checkbox" name="replacements_standart_checkbox" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="replacements_standart_file">
+                <td colspan="4"><textarea name="replacements_standart" style="width:300px; height:80px"></textarea> <input type="text" name="replacements_standart_separator" value=";" style="position: absolute; margin-left: 5px; margin-top: 0; width: 10px;" title="Разделитель" /></td>
+            </tr>
+            <tr class="tbl_replacements">
+                <td colspan="4">Регулярные выражения <input type="checkbox" name="replacements_regular_checkbox" style="float:right;" /></td>
+            </tr>
+            <tr class="tbl_submenu" id="replacements_regular_file">
+                <td colspan="4"><textarea name="replacements_regular" style="width:300px; height:80px"></textarea> <input type="text" name="replacements_regular_separator" value=";" style="position: absolute; margin-left: 5px; margin-top: 0; width: 10px;" title="Разделитель" /></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr id="script_password">
+                <td colspan="4">Пароль для админки: <input type="text" name="script_password" /></td>
+            </tr>
+            <tr>
+                <td><br/></td>
+            </tr>
+            <tr>
+                <td colspan="4"><a target="_blank" style="display:none;" id="clearcsssettings" href="/index.php?sitecopy=adminpanel&action=clearcsssettings">Перегенерировать цвета CSS</a></td>
+            </tr>
+            <tr>
+                <td colspan="4"><a target="_blank" id="clearcache" href="/index.php?sitecopy=adminpanel&action=clearcache">Очистить кэш</a></td>
+            </tr>
+            <tr>
+                <td colspan="4"><a id="reinstall" href="/index.php?sitecopy=adminpanel&action=reinstall">Сбросить настройки (переустановка)</a></td>
+            </tr>
+            <tr>
+            <tr>
+                <td><br/><td>
+            <tr>
+                <td colspan="4">
+                    <input type="hidden" name="adminpanel" value="adminpanel" />
+                    <input type="submit" name="go" value="Начать" style="float:right; "/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div id="footer">by <a href="http://voold.ru/">voold</a>, 2014 &copy;</div>
+<div id="img_example">Пример:<br/><img src="https://pp.vk.me/c606620/v606620296/5bba/PXlZO_ODlfA.jpg" title="Image example" /></div>
+</body>
+<html>
