@@ -1,0 +1,21 @@
+#__dollysites-context-menu {
+	font-family: Tahoma, Geneva, sans-serif;
+	background-color: white;
+	border: 1px solid black;
+	opacity: .97;
+	z-index: 666666;
+	width: 180px;
+	height: 250px;
+	position: absolute;
+	color: black;
+	text-align: center;
+}
+
+.__dollysites-menu-item {
+	padding: 15px 8px 15px 8px;
+	cursor: pointer;
+}
+
+.__dollysites-menu-item:first-child { padding-top: 15px; }
+.__dollysites-menu-item:last-child { padding-bottom: 15px; }
+.__dollysites-menu-item:hover { background-color: #91d3ed; }
