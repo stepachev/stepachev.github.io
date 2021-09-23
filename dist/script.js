@@ -1,135 +1,117 @@
-// https://tympanus.net/codrops/2020/06/02/kinetic-typography-with-three-js/
+//Create var for the contenair, the webGL 3D scene, uniforms to bind into shader and timer
+var stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.domElement );
 
-'use strict';
+var main;
+var content;
+var container;
+var camera, scene, renderer;
+var uniforms;
+var startTime;
 
-/* global THREE */
 
-function main() {
-  const canvas = document.querySelector('#c');
-  const renderer = new THREE.WebGLRenderer({canvas});
+var canvasWidth;
+var canvasHeight;
+var resPoster = 841.0/594.0;
+var minWidth = 450;
+var minHeight = minWidth * resPoster;
+var margin = 50;
 
-  const fov = 40;
-  const aspect = 2;  // the canvas default
-  const near = 0.1;
-  const far = 1000;
-  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.z = 70;
+var cols = 1.;
+var rows  = 400;
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color('black');
+init(); //init scene
+animate(); //updateScene
 
-  function addLight(...pos) {
-    const color = 0xFFFFFF;
-    const intensity = 1;
-    const light = new THREE.DirectionalLight(color, intensity);
-    light.position.set(...pos);
-    scene.add(light);
-  }
-  addLight(-4, 4, 4);
-  addLight(5, -4, 4);
+function init() {
+	//get contenaire
+	main = document.getElementById('main');
+	content = document.getElementById('content');
+	container = document.getElementById('container');
+	
+	//Create THREE.JS scene and timer
+	startTime = Date.now();
+	camera = new THREE.Camera();
+	camera.position.z = 1;
+	scene = new THREE.Scene();
+	
+	//create a simple plance
+	var geometry = new THREE.PlaneBufferGeometry(16, 9);
+	
+	//create uniform table which provide all our GLSL binding
+	uniforms = {
+		time: { type: "f", value: 1.0 },
+		resolution: { type: "v2", value: new THREE.Vector2() },
+		colsrows: {type: "v2", value: new THREE.Vector2()}
+	};
+	
+	//create THREE.JS material
+	var material = new THREE.ShaderMaterial( {
+	//set shaders and uniforms into material
+		uniforms: uniforms,
+		vertexShader: document.getElementById('vertexShader').textContent,
+		fragmentShader: document.getElementById('fragmentShader').textContent
+	} );
 
-  const lettersTilt = new THREE.Object3D();
-  scene.add(lettersTilt);
-  lettersTilt.rotation.set(
-     THREE.Math.degToRad(-7),
-     0,
-     THREE.Math.degToRad(-1));
-  const lettersBase = new THREE.Object3D();
-  lettersTilt.add(lettersBase);
-  {
-    const letterMaterial = new THREE.MeshPhongMaterial({
-      color: '#dc0037',
-    });  
-    const loader = new THREE.FontLoader();
-    loader.load('https://raw.githubusercontent.com/dizux23/druk_2/main/Druk%20Text%20Wide%20Cyr_Medium%20(1).json', (font) => {
-      const spaceSize = 1.0;
-      let totalWidth = 0;
-      let maxHeight = 0;
-      const letterGeometries = {
-        ' ': { width: spaceSize, height: 0 }, // prepopulate space ' '
-      };
-      const size = new THREE.Vector3();
-      const str = 'UPSOUND UPSOUND UPSOUND ';
-      const letterInfos = str.split('').map((letter, ndx) => {
-        if (!letterGeometries[letter]) {
-          const geometry = new THREE.TextBufferGeometry(letter, {
-            font: font,
-            size: 3.0,
-            height: 0,
-            curveSegments: 12
-          });
-          geometry.computeBoundingBox();
-          geometry.boundingBox.getSize(size);
-          letterGeometries[letter] = {
-            geometry,
-            width: size.x / 1.3, // no idea why size.x is double size
-            height: size.y,
-          };
-        }
-        const {geometry, width, height} = letterGeometries[letter];
-        const mesh = geometry
-            ? new THREE.Mesh(geometry, letterMaterial)
-            : null;
-        totalWidth += width;
-        maxHeight = Math.max(maxHeight, height);
-        return {
-          mesh,
-          width,
-        };
-      });
-      let t = 0;
-      const radius = totalWidth / Math.PI;
-      for (const {mesh, width} of letterInfos) {
-        if (mesh) {
-          const offset = new THREE.Object3D();
-          lettersBase.add(offset);
-          offset.add(mesh);
-          offset.rotation.y = t / totalWidth * Math.PI * 2;
-          mesh.position.z = radius;
-          mesh.position.y = -maxHeight / 2;
-        }
-        t += width;
-      }
-      {
-        const geo = new THREE.SphereBufferGeometry(radius - 1, 32, 24);
-        const mat = new THREE.MeshPhongMaterial({
-         color: 'cyan',
-        });
-        const mesh = new THREE.Mesh(geo, mat);
-        // scene.add(mesh);
-      }
-      camera.position.z = radius * 2.5;
-    });
-  }
-
-  function resizeRendererToDisplaySize(renderer) {
-    const canvas = renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const needResize = canvas.width !== width || canvas.height !== height;
-    if (needResize) {
-      renderer.setSize(width, height, false);
-    }
-    return needResize;
-  }
-
-  function render(time) {
-    time *= 0.001;
-
-    if (resizeRendererToDisplaySize(renderer)) {
-      const canvas = renderer.domElement;
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-    }
-    
-    lettersBase.rotation.y = time * -0.4;
-
-    renderer.render(scene, camera);
-
-    requestAnimationFrame(render);
-  }
-
-  requestAnimationFrame(render);
+	//create mesh, add it to the scene
+	var mesh = new THREE.Mesh(geometry, material);
+	scene.add(mesh);
+	
+	//create renderer and add it to the DOM
+	renderer = new THREE.WebGLRenderer();
+	container.appendChild(renderer.domElement);
+	
+	//check window for resize This will give us the proper resolution values to bind
+	onWindowResize();
+	window.addEventListener('resize', onWindowResize, false);
+	
 }
 
-main();
+function onWindowResize(event) {
+	var mainHeight =  window.innerHeight - margin * 2.0;
+	var mainWidth =  mainHeight / resPoster;
+	var contentHeight = content.offsetHeight;
+	var contentMargin = margin  * 0.25;
+	var containerHeight =  mainHeight - (contentHeight + contentMargin);
+	var containerMinHeight =  minHeight - (contentHeight + contentMargin);
+	
+	main.style.height = mainHeight+"px";
+	main.style.width = mainWidth+"px";
+	main.style.minHeight = minHeight+"px";
+	main.style.minWidth = minWidth+"px";
+	main.style.padding = margin*0.5+"px";
+	content.style.margin = "0 0 "+contentMargin+"px 0";
+	container.style.height = containerHeight+"px";
+	container.style.minHeight = containerMinHeight+"px";
+	
+	canvasWidth = container.offsetWidth;
+	canvasHeight = container.offsetHeight;
+	//send new size value to the shader and resize the window
+	uniforms.resolution.value.x = canvasWidth;
+	uniforms.resolution.value.y = canvasHeight;
+	
+	//var res = canvasWidth / cols;
+	//rows = canvasHeight / res;
+	uniforms.colsrows.value.x = cols;
+	uniforms.colsrows.value.y = rows;//rows;
+	
+	renderer.setSize(canvasWidth, canvasHeight);
+}
+
+function animate() {
+	stats.begin();
+	render();
+	stats.end();
+	requestAnimationFrame(animate);
+}
+
+function render() {
+	var currentTime = Date.now();
+	var elaspedSeconds =  (currentTime - startTime) / 1000.0;
+	var maxTime = 4.0;
+	var normTime = (elaspedSeconds % maxTime) / maxTime;
+	uniforms.time.value = elaspedSeconds * 1.0;
+
+	renderer.render(scene, camera);
+}
