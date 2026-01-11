@@ -156,7 +156,6 @@ title: "Главная"
   });
 </script>
 
-<h2 style="margin-top: 80px; margin-bottom: 24px;">Последние записи</h2>
 
 <ul class="post-list">
 {% for post in collections.posts | reverse %}
