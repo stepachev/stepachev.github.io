@@ -22,6 +22,13 @@ This project is a personal blog built with [Eleventy](https://www.11ty.dev/).
 - `src/_includes/`: Layouts and reusable components.
 - `src/css/`: Main stylesheet (`style.css`).
 
+## Deployment
+- **Platform**: GitHub Pages
+- **URL**: [https://stepachev.github.io](https://stepachev.github.io)
+- **Deployment Method**: GitHub Actions (defined in `.github/workflows/deploy.yml`)
+- **Repository**: [stepachev/stepachev.github.io](https://github.com/stepachev/stepachev.github.io)
+- **Automatic Deploys**: Every push to the `main` branch triggers a build and deploy.
+
 ## Guidelines for Agents
 1. **Adding Posts**: Create a new `.md` file in `src/posts/`. Ensure it has proper front matter:
    ```yaml
@@ -34,4 +41,6 @@ This project is a personal blog built with [Eleventy](https://www.11ty.dev/).
 2. **Styling**: Modify `src/css/style.css` for any design changes.
 3. **Philosophy**: The site must remain simple, fast, and lightweight. Avoid unnecessary elements, complex animations, or bloated styles. Stick to a clean, minimalist aesthetic.
 4. **Date Formatting**: Use `dateIso` or `dateReadable` filters in templates for consistency.
-5. **Passthrough**: `src/css` is automatically copied to `_site/css` during build.
+5. **Passthrough**: `src/css` and `src/images` are automatically copied to `_site` during build.
+6. **Deploying Changes**: After making changes, commit them and push to the `main` branch. GitHub Actions will handle the rest.
+
