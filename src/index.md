@@ -51,12 +51,106 @@ title: "Главная"
     // Вызовем сразу на всякий случай
     calculateWidth();
 
-    function animate() {
-      if (!isDragging) {
-        position -= speed;
+
+
+    // --- Navigation (Mouse, Touch, Wheel) ---
+
+    let velocity = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let dragDirection = null; // 'horizontal' or 'vertical'
+
+    track.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        position -= e.deltaX;
+        velocity = -e.deltaX * 0.5; // Немного инерции для колеса
+      }
+    }, { passive: false });
+
+    track.addEventListener('mouseenter', () => { if (!isDragging) speed = 0; });
+    track.addEventListener('mouseleave', () => { if (!isDragging) speed = baseSpeed; });
+
+    track.addEventListener('mousedown', startDrag);
+    track.addEventListener('touchstart', startDrag, {passive: false});
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('touchmove', moveDrag, {passive: false});
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+
+    function startDrag(e) {
+      isDragging = true;
+      dragDirection = null;
+      startX = getPositionX(e);
+      startY = e.type === 'touchstart' ? e.touches[0].clientY : 0;
+      lastX = startX;
+      lastTime = Date.now();
+      oldTranslate = position;
+      velocity = 0;
+      track.style.cursor = 'grabbing';
+      if (e.type === 'mousedown') e.preventDefault();
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+      
+      const currentX = getPositionX(e);
+      const currentY = e.type === 'touchmove' ? e.touches[0].clientY : 0;
+      
+      if (e.type === 'touchmove' && !dragDirection) {
+        const diffX = Math.abs(currentX - startX);
+        const diffY = Math.abs(currentY - startY);
+        if (diffX > 5 || diffY > 5) {
+          dragDirection = diffX > diffY ? 'horizontal' : 'vertical';
+        }
       }
 
-      // Бесшовный сброс (работает и при драге, и при скролле)
+      if (dragDirection === 'vertical') {
+        isDragging = false;
+        return;
+      }
+
+      if (e.type === 'touchmove' && dragDirection === 'horizontal') {
+        e.preventDefault();
+      }
+
+      const now = Date.now();
+      const dt = now - lastTime;
+      if (dt > 0) {
+        velocity = (currentX - lastX) / dt * 16; // Пикселей за кадр (60fps)
+        lastX = currentX;
+        lastTime = now;
+      }
+
+      const diff = currentX - startX;
+      position = oldTranslate + diff;
+    }
+
+    function endDrag() {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = 'grab';
+    }
+
+    function getPositionX(e) {
+      return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+    }
+
+    // Модифицируем функцию animate для учета инерции
+    function updateAnimation() {
+      if (!isDragging) {
+        // Применяем инерцию
+        position += velocity;
+        velocity *= 0.95; // Коэффициент затухания
+
+        // Возвращаемся к базовой скорости, когда инерция затухла
+        if (Math.abs(velocity) < 0.1) {
+          velocity = 0;
+          position -= speed;
+        }
+      }
+
+      // Бесшовный сброс
       if (position <= -singleSetWidth) {
         position += singleSetWidth;
         oldTranslate += singleSetWidth;
@@ -67,88 +161,17 @@ title: "Главная"
       }
 
       track.style.transform = `translateX(${position}px)`;
-      requestID = requestAnimationFrame(animate);
+      requestAnimationFrame(updateAnimation);
     }
 
-    // Запускаем анимацию
-    animate();
+    // Заменяем старый вызов animate
+    // animate(); // Удаляем
+    requestAnimationFrame(updateAnimation);
 
-    // --- Navigation (Mouse, Touch, Wheel) ---
-
-    // Trackpad / Wheel support
-    track.addEventListener('wheel', (e) => {
-      // Только если скролл в основном горизонтальный
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        e.preventDefault();
-        position -= e.deltaX;
-      }
-    }, { passive: false });
-
-    // Пауза при наведении
-    track.addEventListener('mouseenter', () => {
-      if (!isDragging) speed = 0;
-    });
-    
-    track.addEventListener('mouseleave', () => {
-      if (!isDragging) speed = baseSpeed;
-    });
-
-    track.addEventListener('mousedown', startDrag);
-    track.addEventListener('touchstart', startDrag, {passive: false});
-
-    track.addEventListener('mousemove', moveDrag);
-    track.addEventListener('touchmove', moveDrag, {passive: false});
-
-    track.addEventListener('mouseup', endDrag);
-    track.addEventListener('mouseleave', endDrag);
-    track.addEventListener('touchend', endDrag);
-
-    let startTouchY = 0;
-
-    function startDrag(e) {
-      isDragging = true;
-      startX = getPositionX(e);
-      if (e.type === 'touchstart') {
-        startTouchY = e.touches[0].clientY;
-      }
-      oldTranslate = position;
-      track.style.cursor = 'grabbing';
-      if (e.type === 'mousedown') e.preventDefault(); 
-    }
-
-    function moveDrag(e) {
-      if (!isDragging) return;
-      
-      const currentX = getPositionX(e);
-      const diffX = currentX - startX;
-      
-      if (e.type === 'touchmove') {
-        const currentY = e.touches[0].clientY;
-        const diffY = Math.abs(currentY - startTouchY);
-        
-        // Если движение больше горизонтальное, чем вертикальное — блокируем скролл страницы
-        if (Math.abs(diffX) > diffY) {
-          e.preventDefault();
-        }
-      }
-
-      position = oldTranslate + diffX;
-    }
-
-    function endDrag() {
-      if(!isDragging) return;
-      isDragging = false;
-      track.style.cursor = 'grab';
-    }
-
-    function getPositionX(e) {
-      return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-    }
-    
     // Предотвращаем клик по ссылке, если был драг
     track.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', (e) => {
-        if (Math.abs(position - oldTranslate) > 10) { 
+        if (Math.abs(position - oldTranslate) > 10 || Math.abs(velocity) > 1) { 
           e.preventDefault();
         }
       });
