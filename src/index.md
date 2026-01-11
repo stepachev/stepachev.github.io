@@ -54,16 +54,16 @@ title: "Главная"
     function animate() {
       if (!isDragging) {
         position -= speed;
-        
-        // Бесшовный сброс
-        // Если ушли слишком далеко влево (-singleSetWidth), прыгаем в 0
-        if (position <= -singleSetWidth) {
-          position += singleSetWidth;
-        }
-        // Если утащили слишком далеко вправо (больше 0), прыгаем в -singleSetWidth
-        if (position > 0) {
-          position -= singleSetWidth;
-        }
+      }
+
+      // Бесшовный сброс (работает и при драге, и при скролле)
+      if (position <= -singleSetWidth) {
+        position += singleSetWidth;
+        oldTranslate += singleSetWidth;
+      }
+      if (position > 0) {
+        position -= singleSetWidth;
+        oldTranslate -= singleSetWidth;
       }
 
       track.style.transform = `translateX(${position}px)`;
@@ -73,19 +73,18 @@ title: "Главная"
     // Запускаем анимацию
     animate();
 
-    // --- Drag Logic ---
+    // --- Navigation (Mouse, Touch, Wheel) ---
 
-    track.addEventListener('mousedown', startDrag);
-    track.addEventListener('touchstart', startDrag, {passive: true});
+    // Trackpad / Wheel support
+    track.addEventListener('wheel', (e) => {
+      // Только если скролл в основном горизонтальный
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        position -= e.deltaX;
+      }
+    }, { passive: false });
 
-    track.addEventListener('mousemove', moveDrag);
-    track.addEventListener('touchmove', moveDrag, {passive: true});
-
-    track.addEventListener('mouseup', endDrag);
-    track.addEventListener('mouseleave', endDrag);
-    track.addEventListener('touchend', endDrag);
-
-    // Пауза при наведении (как было раньше)
+    // Пауза при наведении
     track.addEventListener('mouseenter', () => {
       if (!isDragging) speed = 0;
     });
@@ -94,40 +93,63 @@ title: "Главная"
       if (!isDragging) speed = baseSpeed;
     });
 
+    track.addEventListener('mousedown', startDrag);
+    track.addEventListener('touchstart', startDrag, {passive: false});
+
+    track.addEventListener('mousemove', moveDrag);
+    track.addEventListener('touchmove', moveDrag, {passive: false});
+
+    track.addEventListener('mouseup', endDrag);
+    track.addEventListener('mouseleave', endDrag);
+    track.addEventListener('touchend', endDrag);
+
+    let startTouchY = 0;
+
     function startDrag(e) {
       isDragging = true;
       startX = getPositionX(e);
+      if (e.type === 'touchstart') {
+        startTouchY = e.touches[0].clientY;
+      }
       oldTranslate = position;
       track.style.cursor = 'grabbing';
-      // Отменяем стандартное поведение перетаскивания картинок
-      e.preventDefault(); 
+      if (e.type === 'mousedown') e.preventDefault(); 
     }
 
     function moveDrag(e) {
       if (!isDragging) return;
       
       const currentX = getPositionX(e);
-      const diff = currentX - startX;
-      position = oldTranslate + diff;
+      const diffX = currentX - startX;
+      
+      if (e.type === 'touchmove') {
+        const currentY = e.touches[0].clientY;
+        const diffY = Math.abs(currentY - startTouchY);
+        
+        // Если движение больше горизонтальное, чем вертикальное — блокируем скролл страницы
+        if (Math.abs(diffX) > diffY) {
+          e.preventDefault();
+        }
+      }
+
+      position = oldTranslate + diffX;
     }
 
     function endDrag() {
       if(!isDragging) return;
       isDragging = false;
       track.style.cursor = 'grab';
-      // Если мышь все еще над элементом, скорость остается 0, иначе восстанавливается
-      // Но внутри обработчика mouseleave мы это уже учли
     }
 
     function getPositionX(e) {
       return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
     }
     
-    // Предотвращаем клик по ссылке, если был драг (опционально, но полезно)
+    // Предотвращаем клик по ссылке, если был драг
     track.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', (e) => {
-        if (Math.abs(position - oldTranslate) > 5) { // Если сдвинули хоть немного
-          e.preventDefault(); // Это не клик, а драг
+        if (Math.abs(position - oldTranslate) > 10) { 
+          e.preventDefault();
         }
       });
     });
@@ -140,6 +162,7 @@ title: "Главная"
 {% for post in collections.posts | reverse %}
   <li>
     <a href="{{ post.url }}">{{ post.data.title }}</a>
+    <span class="post-date">{{ post.date | dateReadable }}</span>
   </li>
 {% endfor %}
 </ul>

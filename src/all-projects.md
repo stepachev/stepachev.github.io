@@ -9,7 +9,6 @@ title: "Проекты"
       <img src="{{ project.data.image }}" alt="{{ project.data.title }}">
       <div class="project-info">
         <h3>{{ project.data.title }}</h3>
-
       </div>
     </a>
   {%- endfor -%}
