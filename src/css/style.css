@@ -334,6 +334,7 @@ pre {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  cursor: -webkit-zoom-out;
   cursor: zoom-out;
 }
 
@@ -357,11 +358,12 @@ pre {
 }
 
 article img {
+  cursor: -webkit-zoom-in;
   cursor: zoom-in;
-  transition: transform 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 article img:hover {
-  transform: translateY(-2px);
+  /* No transform or opacity change on hover */
 }
 
