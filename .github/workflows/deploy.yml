@@ -31,7 +31,11 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        env:
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+        run: |
+          npx tinacms build
+          npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
