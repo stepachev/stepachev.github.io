@@ -1,6 +1,7 @@
 ---
 title: TOFU branding
 image: /images/464888637_563884812796602_5336331057207957768_n..jpg
+description: 'Брендинг музыкального проекта '
 order: 0
 layout: layouts/project.html
 tags: projects
